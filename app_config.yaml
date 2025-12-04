@@ -1,0 +1,45 @@
+app_name: Polymer Extrusion Viscosity Calculator
+description: Интерактивный калькулятор вязкости полимерных материалов при экструзии
+  плоских пленок
+parameters:
+  input:
+    temperature:
+      symbol: T
+      description: Температура материала
+      unit: °C
+      min: 175
+      max: 205
+      default: 180
+      step: 2
+    shear_rate:
+      symbol: γ
+      description: Скорость деформации сдвига материала
+      unit: 1/с
+      min: 30
+      max: 60
+      default: 40
+      step: 2
+  model:
+    mu_0:
+      value: 1550
+      unit: Па·с^n
+      description: Коэффициент консистенции материала при температуре приведения
+    b:
+      value: 0.0146
+      unit: 1/°C
+      description: Температурный коэффициент вязкости материала
+    T_0:
+      value: 180
+      unit: °C
+      description: Температура приведения
+    n:
+      value: 0.395
+      unit: безразмерный
+      description: Индекс течения (псевдопластичности) материала
+  output:
+    viscosity:
+      symbol: η
+      description: Вязкость экструдата
+      unit: Па·с
+formula: η = μ₀ · exp[-b·(T-T₀)] · γ^(n-1)
+material: Полипропилен

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Исследование процесса экструзии полимеров</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <i class="fas fa-industry header-icon"></i>
+                <div>
+                    <h1>Программный комплекс для исследования процесса экструзии</h1>
+                    <p class="subtitle">Анализ зависимости вязкости от технологических параметров</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Object Description -->
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h2>Объект исследования</h2>
+                </div>
+                <div class="card-body">
+                    <p class="description">Процесс одношнековой экструзии полимерных материалов (полипропилен) при производстве плоских пленок</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Parameters -->
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-calculator"></i>
+                    <h2>Параметры математической модели</h2>
+                </div>
+                <div class="card-body">
+                    <div class="formula-box">
+                        <h3>Математическая формула</h3>
+                        <div class="formula">η = μ₀ · exp[-b·(T-T₀)] · γ<sup>(n-1)</sup></div>
+                        <p class="formula-description">где η - вязкость экструдата (Па·с)</p>
+                    </div>
+                    
+                    <div class="parameters-grid">
+                        <div class="parameter-card" data-tooltip="Коэффициент консистенции материала при температуре приведения">
+                            <div class="parameter-label">μ₀</div>
+                            <div class="parameter-value">1550</div>
+                            <div class="parameter-unit">Па·с<sup>n</sup></div>
+                        </div>
+                        <div class="parameter-card" data-tooltip="Температурный коэффициент вязкости материала">
+                            <div class="parameter-label">b</div>
+                            <div class="parameter-value">0.0146</div>
+                            <div class="parameter-unit">1/°C</div>
+                        </div>
+                        <div class="parameter-card" data-tooltip="Температура приведения">
+                            <div class="parameter-label">T₀</div>
+                            <div class="parameter-value">180</div>
+                            <div class="parameter-unit">°C</div>
+                        </div>
+                        <div class="parameter-card" data-tooltip="Индекс течения/псевдопластичности материала">
+                            <div class="parameter-label">n</div>
+                            <div class="parameter-value">0.395</div>
+                            <div class="parameter-unit">безразмерный</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator -->
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-sliders-h"></i>
+                    <h2>Калькулятор вязкости</h2>
+                </div>
+                <div class="card-body">
+                    <div class="calculator-grid">
+                        <!-- Temperature Slider -->
+                        <div class="slider-container">
+                            <div class="slider-header">
+                                <label for="temperature">Температура материала T</label>
+                                <span class="slider-value" id="tempValue">180</span>
+                            </div>
+                            <input type="range" id="temperature" min="175" max="205" value="180" step="1" class="slider">
+                            <div class="slider-range">
+                                <span>175°C</span>
+                                <span>205°C</span>
+                            </div>
+                        </div>
+
+                        <!-- Shear Rate Slider -->
+                        <div class="slider-container">
+                            <div class="slider-header">
+                                <label for="shearRate">Скорость деформации сдвига γ</label>
+                                <span class="slider-value" id="shearValue">40</span>
+                            </div>
+                            <input type="range" id="shearRate" min="30" max="60" value="40" step="1" class="slider">
+                            <div class="slider-range">
+                                <span>30 (1/с)</span>
+                                <span>60 (1/с)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Result Card -->
+                    <div class="result-card">
+                        <div class="result-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div class="result-content">
+                            <div class="result-label">Рассчитанная вязкость</div>
+                            <div class="result-value" id="viscosityResult">0.00</div>
+                            <div class="result-unit">Па·с</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="button-group">
+                        <button class="btn btn-secondary" id="resetBtn">
+                            <i class="fas fa-undo"></i> Сбросить параметры
+                        </button>
+                        <button class="btn btn-primary" id="exportBtn">
+                            <i class="fas fa-download"></i> Экспорт данных
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Table -->
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    <h2>Таблица результатов</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0)">T (°C) <i class="fas fa-sort"></i></th>
+                                    <th onclick="sortTable(1)">γ (1/с) <i class="fas fa-sort"></i></th>
+                                    <th onclick="sortTable(2)">η (Па·с) <i class="fas fa-sort"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts -->
+        <section class="section">
+            <div class="charts-grid">
+                <!-- Temperature Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Зависимость вязкости от температуры</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="tempChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shear Rate Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Зависимость вязкости от скорости деформации</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="shearChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Heatmap -->
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-fire"></i>
+                    <h2>Тепловая карта зависимости вязкости</h2>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container-large">
+                        <canvas id="heatmapChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Model -->
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-book"></i>
+                    <h2>О модели</h2>
+                </div>
+                <div class="card-body">
+                    <p class="model-description">
+                        Математическая модель описывает зависимость вязкости полимерного расплава от температуры и скорости деформации сдвига. 
+                        Модель основана на степенном законе с температурной зависимостью по закону Аррениуса.
+                    </p>
+                    <p class="model-description">
+                        Степенной закон характеризует псевдопластичное поведение полимерного расплава, где вязкость уменьшается 
+                        с увеличением скорости деформации. Температурная зависимость описывается экспоненциальной функцией, 
+                        отражающей снижение вязкости при повышении температуры.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+       
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
